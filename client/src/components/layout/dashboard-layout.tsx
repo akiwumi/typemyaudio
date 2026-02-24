@@ -1,0 +1,30 @@
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
+import { Sidebar } from "./sidebar";
+
+export function DashboardLayout() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <div className="flex min-h-screen bg-gray-50/50">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-8">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  );
+}
