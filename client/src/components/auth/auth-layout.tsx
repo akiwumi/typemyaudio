@@ -1,34 +1,62 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
+
+const AUTH_PHOTO = "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80";
 
 export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-accent to-primary/80 items-center justify-center p-12">
-        <div className="max-w-md text-white space-y-6">
-          <img src="/imgs/typeMyAudioLogo.png" alt="TypeMyAudio" className="h-24 w-auto" />
-          <p className="text-lg text-white/80">
-            AI-powered transcription for your audio and video files. Auto-detect language, translate,
-            and export to PDF, DOCX, TXT, or SRT.
-          </p>
-          <div className="space-y-3 text-sm text-white/70">
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
-              98+ languages with auto-detection
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
-              AI-powered grammar cleanup and summarization
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
-              Export to PDF, DOCX, TXT, and SRT subtitles
+      {/* Editorial photo panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img
+          src={AUTH_PHOTO}
+          alt="Professional using TypeMyAudio"
+          className="absolute inset-0 img-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1B2E] via-[#1A1B2E]/40 to-transparent" />
+
+        <div className="relative z-10 flex flex-col justify-between p-10 w-full">
+          <Link to="/">
+            <img
+              src="/imgs/typeMyAudioLogo.png"
+              alt="TypeMyAudio"
+              className="h-16 w-auto brightness-0 invert opacity-90"
+            />
+          </Link>
+
+          <div className="max-w-md">
+            <p className="pull-quote text-white border-white/20 mb-6">
+              "Every spoken word deserves to be captured with precision."
+            </p>
+            <div className="magazine-divider mb-6 opacity-40" />
+            <div className="flex flex-wrap gap-6 text-sm text-white/50">
+              <div>
+                <p className="text-2xl font-bold text-white/90">98+</p>
+                <p>Languages</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white/90">40+</p>
+                <p>Translations</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white/90">4</p>
+                <p>Export formats</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center p-8">
-        <div className="w-full max-w-md">{children}</div>
+      {/* Form panel */}
+      <div className="flex flex-1 items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md">
+          <div className="lg:hidden mb-8">
+            <Link to="/">
+              <img src="/imgs/typeMyAudioLogo.png" alt="TypeMyAudio" className="h-14 w-auto" />
+            </Link>
+          </div>
+          {children}
+        </div>
       </div>
     </div>
   );

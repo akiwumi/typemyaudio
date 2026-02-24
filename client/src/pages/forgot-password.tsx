@@ -30,13 +30,13 @@ export default function ForgotPasswordPage() {
     return (
       <AuthLayout>
         <div className="space-y-4 text-center">
-          <div className="mx-auto h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-            <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mx-auto h-12 w-12 rounded-full bg-red-50 flex items-center justify-center">
+            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold">Check your email</h2>
-          <p className="text-muted">
+          <h2 className="heading-xl text-2xl">Check your email</h2>
+          <p className="text-foreground-muted">
             If an account exists for <strong>{email}</strong>, we've sent a password reset link.
           </p>
           <Link to="/login" className="text-primary hover:underline text-sm">
@@ -51,14 +51,14 @@ export default function ForgotPasswordPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Reset password</h2>
-          <p className="mt-1 text-sm text-muted">
+          <h2 className="heading-xl text-2xl">Reset password</h2>
+          <p className="mt-1 text-sm text-foreground-muted">
             Enter your email and we'll send you a link to reset your password.
           </p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -76,9 +76,9 @@ export default function ForgotPasswordPage() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted">
+        <p className="text-center text-sm text-foreground-muted">
           Remember your password?{" "}
-          <Link to="/login" className="text-primary hover:underline font-medium">
+          <Link to="/login" className="text-primary hover:underline font-semibold">
             Sign in
           </Link>
         </p>

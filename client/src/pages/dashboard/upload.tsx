@@ -94,12 +94,12 @@ export default function UploadPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">New Transcription</h1>
-        <p className="text-muted mt-1">Upload an MP3 or MP4 file to transcribe</p>
+        <h1 className="heading-xl text-2xl">New Transcription</h1>
+        <p className="text-foreground-muted mt-1">Upload an MP3 or MP4 file to transcribe</p>
       </div>
 
       {error && (
-        <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+        <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -107,7 +107,7 @@ export default function UploadPage() {
       <Card>
         <CardContent>
           {file ? (
-            <div className="flex items-center justify-between p-4 rounded-lg bg-secondary">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-secondary">
               <div className="flex items-center gap-3">
                 {file.type.startsWith("audio") ? (
                   <FileAudio className="h-8 w-8 text-primary" />
@@ -116,12 +116,12 @@ export default function UploadPage() {
                 )}
                 <div>
                   <p className="font-medium">{file.name}</p>
-                  <p className="text-sm text-muted">{formatFileSize(file.size)}</p>
+                  <p className="text-sm text-foreground-muted">{formatFileSize(file.size)}</p>
                 </div>
               </div>
               <button
                 onClick={() => setFile(null)}
-                className="p-1 hover:bg-gray-200 rounded cursor-pointer"
+                className="p-1.5 hover:bg-border-hover rounded-lg cursor-pointer transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -129,22 +129,22 @@ export default function UploadPage() {
           ) : (
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${
-                isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+              className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200 ${
+                isDragActive ? "border-primary bg-primary-light" : "border-border hover:border-primary/50"
               }`}
             >
               <input {...getInputProps()} />
-              <Upload className="mx-auto h-12 w-12 text-muted mb-4" />
+              <Upload className="mx-auto h-12 w-12 text-foreground-muted mb-4" />
               <p className="text-lg font-medium">
                 {isDragActive ? "Drop your file here" : "Drop your MP3 or MP4 file here"}
               </p>
-              <p className="text-sm text-muted mt-1">or click to browse (max 500MB)</p>
+              <p className="text-sm text-foreground-muted mt-1">or click to browse (max 500MB)</p>
             </div>
           )}
         </CardContent>
       </Card>
 
-      <div className="flex items-start gap-3 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
+      <div className="flex items-start gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-800">
         <Globe className="h-4 w-4 mt-0.5 flex-shrink-0" />
         <p>Language is detected automatically — your file will be transcribed in its original language.</p>
       </div>
@@ -157,7 +157,7 @@ export default function UploadPage() {
           <select
             value={targetLanguage}
             onChange={(e) => setTargetLanguage(e.target.value)}
-            className="w-full border border-border rounded-lg p-3 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="w-full border border-border rounded-xl p-3 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
           >
             <option value="">No translation — keep original language</option>
             {TRANSLATION_TARGETS.map((lang) => (
@@ -172,7 +172,7 @@ export default function UploadPage() {
       {uploading && (
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted">Uploading and processing...</span>
+            <span className="text-foreground-muted">Uploading and processing...</span>
             <span className="font-medium">{progress}%</span>
           </div>
           <div className="h-2 rounded-full bg-secondary overflow-hidden">

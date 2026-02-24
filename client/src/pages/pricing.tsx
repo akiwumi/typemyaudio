@@ -4,7 +4,10 @@ import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, X } from "lucide-react";
+import { FloatingNav } from "@/components/layout/floating-nav";
+import { Check, X, ArrowRight } from "lucide-react";
+
+const HERO_PHOTO = "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=2400&q=80";
 
 const plans = [
   {
@@ -101,67 +104,58 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/imgs/typeMyAudioLogo.png" alt="TypeMyAudio" className="h-18 w-auto" />
-          </Link>
-          <div className="flex items-center gap-4">
-            {user ? (
-              <Link to="/dashboard">
-                <Button variant="outline">Dashboard</Button>
-              </Link>
-            ) : (
-              <>
-                <Link to="/login">
-                  <Button variant="ghost">Sign in</Button>
-                </Link>
-                <Link to="/register">
-                  <Button>Get Started</Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <FloatingNav />
 
-      <main className="max-w-7xl mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Simple, transparent pricing</h1>
-          <p className="text-lg text-muted max-w-2xl mx-auto">
-            Choose the plan that fits your needs. Start free and upgrade when you're ready.
+      {/* ── Magazine Hero ── */}
+      <section className="relative h-[28rem] flex items-end">
+        <div className="absolute inset-0">
+          <img src={HERO_PHOTO} alt="Professional workspace" className="img-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1B2E] via-[#1A1B2E]/50 to-transparent" />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pb-16 w-full">
+          <span className="label-tag text-white/50 mb-4 inline-block">Pricing</span>
+          <h1 className="editorial-display text-[#FACC15] text-4xl md:text-5xl mb-3">
+            Simple,{" "}
+            <span className="editorial-italic text-primary-light">transparent</span>{" "}
+            pricing
+          </h1>
+          <p className="text-white/60 max-w-lg">
+            Choose the plan that fits your workflow. Start free and upgrade when you're ready.
           </p>
         </div>
+      </section>
 
+      {/* ── Plans ── */}
+      <main className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
             <Card
               key={plan.tier}
-              className={`relative ${plan.popular ? "border-primary shadow-lg scale-[1.02]" : ""}`}
+              className={`relative flex flex-col ${plan.popular ? "border-primary shadow-lg ring-1 ring-primary/20 scale-[1.02]" : ""}`}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-primary text-white px-3">Most Popular</Badge>
+                  <Badge className="bg-primary text-white px-3 shadow-sm">Most Popular</Badge>
                 </div>
               )}
               <CardHeader className="text-center pb-2">
                 <CardTitle>{plan.name}</CardTitle>
-                <div className="mt-2">
+                <div className="mt-3">
                   <span className="text-3xl font-bold">{plan.price}</span>
-                  <span className="text-muted">{plan.period}</span>
+                  <span className="text-foreground-muted">{plan.period}</span>
                 </div>
-                <p className="text-sm text-muted mt-2">{plan.description}</p>
+                <p className="text-sm text-foreground-muted mt-2">{plan.description}</p>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <ul className="space-y-3">
+              <CardContent className="space-y-4 flex-1 flex flex-col">
+                <ul className="space-y-3 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature.label} className="flex items-start gap-2 text-sm">
                       {feature.included ? (
-                        <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <Check className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
                       ) : (
                         <X className="h-4 w-4 text-gray-300 mt-0.5 flex-shrink-0" />
                       )}
-                      <span className={feature.included ? "" : "text-muted"}>{feature.label}</span>
+                      <span className={feature.included ? "" : "text-foreground-muted"}>{feature.label}</span>
                     </li>
                   ))}
                 </ul>
@@ -178,19 +172,44 @@ export default function PricingPage() {
                   </Button>
                 ) : (
                   <Button
-                    className="w-full"
+                    className="w-full gap-2"
                     variant={plan.popular ? "primary" : "outline"}
                     onClick={() => plan.priceId && handleSubscribe(plan.priceId)}
                     disabled={profile?.tier === plan.tier}
                   >
                     {profile?.tier === plan.tier ? "Current plan" : plan.cta}
+                    {profile?.tier !== plan.tier && <ArrowRight className="h-3.5 w-3.5" />}
                   </Button>
                 )}
               </CardContent>
             </Card>
           ))}
         </div>
+
+        {/* FAQ or bottom note */}
+        <div className="text-center mt-16 pt-16 border-t border-border">
+          <p className="editorial-display text-2xl md:text-3xl mb-4">
+            Questions? <span className="editorial-italic">We're here.</span>
+          </p>
+          <p className="text-foreground-muted mb-6 max-w-md mx-auto">
+            Reach out to our team for custom enterprise solutions or any questions about our plans.
+          </p>
+          <a href="mailto:hello@typemyaudio.com">
+            <Button variant="outline">Contact Us</Button>
+          </a>
+        </div>
       </main>
+
+      {/* ── Footer ── */}
+      <footer className="bg-foreground text-white/60">
+        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+          <p>&copy; {new Date().getFullYear()} TypeMyAudio. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

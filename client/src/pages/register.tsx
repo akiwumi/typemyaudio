@@ -44,13 +44,13 @@ export default function RegisterPage() {
     return (
       <AuthLayout>
         <div className="space-y-4 text-center">
-          <div className="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-            <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mx-auto h-12 w-12 rounded-full bg-emerald-50 flex items-center justify-center">
+            <svg className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold">Check your email</h2>
-          <p className="text-muted">
+          <h2 className="heading-xl text-2xl">Check your email</h2>
+          <p className="text-foreground-muted">
             We've sent a verification link to <strong>{email}</strong>. Click the link to activate your account.
           </p>
           <Button variant="outline" onClick={() => navigate("/login")}>
@@ -65,12 +65,12 @@ export default function RegisterPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Create an account</h2>
-          <p className="mt-1 text-sm text-muted">Start transcribing with 3 free transcriptions</p>
+          <h2 className="heading-xl text-2xl">Create an account</h2>
+          <p className="mt-1 text-sm text-foreground-muted">Start transcribing with 3 free transcriptions</p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -120,7 +120,7 @@ export default function RegisterPage() {
             <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-background px-2 text-muted">or continue with</span>
+            <span className="bg-background px-2 text-foreground-muted">or continue with</span>
           </div>
         </div>
 
@@ -134,9 +134,9 @@ export default function RegisterPage() {
           Continue with Google
         </Button>
 
-        <p className="text-center text-sm text-muted">
+        <p className="text-center text-sm text-foreground-muted">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary hover:underline font-medium">
+          <Link to="/login" className="text-primary hover:underline font-semibold">
             Sign in
           </Link>
         </p>

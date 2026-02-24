@@ -9,9 +9,7 @@ import { formatDate } from "@/lib/utils";
 import type { Transcription } from "@/types/database";
 import {
   ArrowLeft,
-  Download,
   Languages,
-  Clock,
   Edit3,
   Save,
   FileText,
@@ -121,12 +119,12 @@ export default function TranscriptionViewPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-secondary rounded-lg cursor-pointer">
+        <button onClick={() => navigate(-1)} className="p-2 hover:bg-secondary rounded-xl cursor-pointer transition-colors">
           <ArrowLeft className="h-5 w-5" />
         </button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">{transcription.title}</h1>
-          <div className="flex items-center gap-3 mt-1 text-sm text-muted">
+          <h1 className="heading-xl text-2xl">{transcription.title}</h1>
+          <div className="flex items-center gap-3 mt-1 text-sm text-foreground-muted">
             <span>{formatDate(transcription.created_at)}</span>
             {transcription.detected_language_name && (
               <>
@@ -160,7 +158,7 @@ export default function TranscriptionViewPage() {
               <p className="font-medium">
                 {transcription.status === "pending" ? "Queued for processing..." : "Transcribing your file..."}
               </p>
-              <p className="text-sm text-muted">This may take a few minutes depending on file length.</p>
+              <p className="text-sm text-foreground-muted">This may take a few minutes depending on file length.</p>
             </div>
           </CardContent>
         </Card>
@@ -207,7 +205,7 @@ export default function TranscriptionViewPage() {
             <div className="flex-1" />
 
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted">Export:</span>
+              <span className="text-sm text-foreground-muted">Export:</span>
               {["txt", "pdf", "docx"].map((fmt) => (
                 <Button
                   key={fmt}
@@ -235,12 +233,12 @@ export default function TranscriptionViewPage() {
                 <textarea
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className="w-full min-h-[400px] p-4 rounded-lg border border-border bg-background text-sm leading-relaxed font-mono resize-y focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full min-h-[400px] p-4 rounded-xl border border-border bg-background text-sm leading-relaxed font-mono resize-y focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               ) : isEnterprise && transcription.sentence_timecodes ? (
                 <div className="space-y-1">
                   {transcription.sentence_timecodes.map((s, i) => (
-                    <div key={i} className="flex gap-3 group hover:bg-gray-50 p-2 rounded">
+                    <div key={i} className="flex gap-3 group hover:bg-surface p-2 rounded-lg transition-colors">
                       <button
                         onClick={() => {
                           const player = playerRef.current;

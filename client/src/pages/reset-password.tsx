@@ -41,12 +41,12 @@ export default function ResetPasswordPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Set new password</h2>
-          <p className="mt-1 text-sm text-muted">Enter your new password below.</p>
+          <h2 className="heading-xl text-2xl">Set new password</h2>
+          <p className="mt-1 text-sm text-foreground-muted">Enter your new password below.</p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">

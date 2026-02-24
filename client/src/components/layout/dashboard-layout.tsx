@@ -18,7 +18,7 @@ export function DashboardLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50/50">
+    <div className="flex min-h-screen bg-surface">
       <Sidebar />
       <main className="flex-1 overflow-y-auto">
         <div className="p-8">

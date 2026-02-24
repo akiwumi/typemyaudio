@@ -4,7 +4,7 @@ import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Settings, User, Lock } from "lucide-react";
+import { User, Lock } from "lucide-react";
 
 export default function SettingsPage() {
   const { profile, updatePassword } = useAuth();
@@ -12,7 +12,6 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -49,7 +48,6 @@ export default function SettingsPage() {
     setPasswordSaving(true);
     try {
       await updatePassword(newPassword);
-      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setPasswordSaved(true);
@@ -64,8 +62,8 @@ export default function SettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Account Settings</h1>
-        <p className="text-muted mt-1">Manage your profile and preferences</p>
+        <h1 className="heading-xl text-2xl">Account Settings</h1>
+        <p className="text-foreground-muted mt-1">Manage your profile and preferences</p>
       </div>
 
       <Card>
@@ -93,7 +91,7 @@ export default function SettingsPage() {
               <Button type="submit" loading={saving}>
                 Save changes
               </Button>
-              {saved && <span className="text-sm text-green-600">Saved!</span>}
+              {saved && <span className="text-sm text-success font-medium">Saved!</span>}
             </div>
           </form>
         </CardContent>
@@ -108,7 +106,7 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           {passwordError && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 mb-4">
+            <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700 mb-4">
               {passwordError}
             </div>
           )}
@@ -135,7 +133,7 @@ export default function SettingsPage() {
               <Button type="submit" loading={passwordSaving}>
                 Update password
               </Button>
-              {passwordSaved && <span className="text-sm text-green-600">Password updated!</span>}
+              {passwordSaved && <span className="text-sm text-success font-medium">Password updated!</span>}
             </div>
           </form>
         </CardContent>

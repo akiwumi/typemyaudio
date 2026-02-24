@@ -74,7 +74,7 @@ export default function SubscriptionPage() {
   }
 
   if (loading) {
-    return <div className="h-40 rounded-lg bg-secondary animate-pulse" />;
+    return <div className="h-40 rounded-xl bg-secondary animate-pulse" />;
   }
 
   const tierLabels: Record<string, string> = {
@@ -84,8 +84,8 @@ export default function SubscriptionPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Subscription</h1>
-        <p className="text-muted mt-1">Manage your plan and billing</p>
+        <h1 className="heading-xl text-2xl">Subscription</h1>
+        <p className="text-foreground-muted mt-1">Manage your plan and billing</p>
       </div>
 
       <Card>
@@ -99,7 +99,7 @@ export default function SubscriptionPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xl font-bold">{tierLabels[subscription?.tier || "free"]}</p>
-              <p className="text-sm text-muted">
+              <p className="text-sm text-foreground-muted">
                 {subscription?.tier === "free"
                   ? `${subscription?.total_free_used ?? 0} of 3 lifetime transcriptions used`
                   : `${subscription?.usage_this_month ?? 0} of 15 transcriptions used this month`}
@@ -111,9 +111,9 @@ export default function SubscriptionPage() {
           </div>
 
           {subscription?.subscription_end && (
-            <div className="text-sm text-muted">
+            <div className="text-sm text-foreground-muted">
               {subscription.cancel_at_period_end ? (
-                <div className="flex items-center gap-2 text-amber-700 bg-amber-50 rounded-lg p-3">
+                <div className="flex items-center gap-2 text-amber-700 bg-amber-50 rounded-xl p-3">
                   <AlertCircle className="h-4 w-4" />
                   <span>
                     Your subscription will end on{" "}
@@ -152,7 +152,7 @@ export default function SubscriptionPage() {
             <CardTitle>Extra Tokens</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-muted">
+            <p className="text-sm text-foreground-muted">
               You have <strong>{subscription?.purchased_tokens ?? 0}</strong> extra transcription tokens.
               Purchase more if you've reached your monthly limit.
             </p>

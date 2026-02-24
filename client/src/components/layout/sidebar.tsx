@@ -28,7 +28,7 @@ export function Sidebar() {
         <img src="/imgs/typeMyAudioLogo.png" alt="TypeMyAudio" className="h-14 w-auto" />
       </div>
 
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className="flex-1 space-y-0.5 p-4">
         {navItems.map((item) => {
           const isActive =
             location.pathname === item.href ||
@@ -39,10 +39,10 @@ export function Sidebar() {
               key={item.href}
               to={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted hover:bg-secondary hover:text-foreground"
+                  ? "bg-primary-light text-primary font-semibold"
+                  : "text-foreground-muted hover:bg-surface hover:text-foreground"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -54,19 +54,19 @@ export function Sidebar() {
 
       <div className="border-t border-border p-4">
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-medium">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary text-sm font-semibold">
             {profile?.full_name?.[0]?.toUpperCase() || "U"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
               {profile?.full_name || "User"}
             </p>
-            <p className="text-xs text-muted capitalize">{profile?.tier || "Free"} plan</p>
+            <p className="text-xs text-foreground-muted capitalize">{profile?.tier || "Free"} plan</p>
           </div>
         </div>
         <button
           onClick={() => signOut()}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-foreground-muted hover:bg-surface hover:text-foreground transition-all duration-200 cursor-pointer"
         >
           <LogOut className="h-4 w-4" />
           Sign out

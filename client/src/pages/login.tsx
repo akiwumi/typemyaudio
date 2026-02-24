@@ -39,12 +39,12 @@ export default function LoginPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
-          <p className="mt-1 text-sm text-muted">Sign in to your account to continue</p>
+          <h2 className="heading-xl text-2xl">Welcome back</h2>
+          <p className="mt-1 text-sm text-foreground-muted">Sign in to your account to continue</p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -83,7 +83,7 @@ export default function LoginPage() {
             <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-background px-2 text-muted">or continue with</span>
+            <span className="bg-background px-2 text-foreground-muted">or continue with</span>
           </div>
         </div>
 
@@ -97,9 +97,9 @@ export default function LoginPage() {
           Continue with Google
         </Button>
 
-        <p className="text-center text-sm text-muted">
+        <p className="text-center text-sm text-foreground-muted">
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary hover:underline font-medium">
+          <Link to="/register" className="text-primary hover:underline font-semibold">
             Sign up
           </Link>
         </p>
