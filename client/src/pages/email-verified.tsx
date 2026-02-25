@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { AuthLayout } from "@/components/auth/auth-layout";
-import { Button } from "@/components/ui/button";
 
 export default function EmailVerifiedPage() {
   return (
@@ -19,9 +18,12 @@ export default function EmailVerifiedPage() {
           </p>
         </div>
 
-        <Button asChild className="w-full">
-          <Link to="/login">Go to sign in</Link>
-        </Button>
+        <Link
+          to="/login"
+          className="inline-flex items-center justify-center w-full h-10 px-5 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+        >
+          Go to sign in
+        </Link>
       </div>
     </AuthLayout>
   );

@@ -1,5 +1,7 @@
 -- TypeMyAudio Database Schema
 -- Run this in Supabase SQL Editor or via psql
+--
+-- Creates: tables, indexes, RLS policies, triggers, storage buckets (audio-uploads, transcription-exports)
 
 -- ============================================
 -- TABLES
@@ -252,6 +254,12 @@ ON CONFLICT (id) DO NOTHING;
 -- ============================================
 -- STORAGE POLICIES
 -- ============================================
+-- Path format: {user_id}/{transcription_id}/{filename}
+
+DROP POLICY IF EXISTS "Users can upload audio files" ON storage.objects;
+DROP POLICY IF EXISTS "Users can read own audio files" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own audio files" ON storage.objects;
+DROP POLICY IF EXISTS "Users can read own exports" ON storage.objects;
 
 -- audio-uploads: users can upload to their own folder
 CREATE POLICY "Users can upload audio files"

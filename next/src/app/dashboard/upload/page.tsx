@@ -77,7 +77,8 @@ export default function UploadPage() {
       setProgress(100);
       router.push(`/dashboard/transcriptions/${result.id}`);
     } catch (err: any) {
-      setError(err.message || "Upload failed. Please try again.");
+      const msg = err?.message || err?.error || String(err);
+      setError(msg || "Upload failed. Please try again.");
       setUploading(false);
       setProgress(0);
     }

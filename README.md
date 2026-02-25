@@ -4,9 +4,9 @@ AI-powered transcription web app for MP3 and MP4 files. Auto-detects language, t
 
 ## Tech Stack
 
-**Frontend:** React 18, Vite, TypeScript, TailwindCSS, React Router, TanStack Query, Zustand
+**App:** Next.js 15, React 18, TypeScript, TailwindCSS
 
-**Backend:** Node.js, Express, BullMQ, Redis, Multer
+**Queue:** BullMQ, Redis
 
 **AI:** OpenAI Whisper (transcription + language detection), GPT-4o (cleanup, translation, summarisation)
 
@@ -30,24 +30,15 @@ AI-powered transcription web app for MP3 and MP4 files. Auto-detects language, t
 
 ```
 typemyaudio/
-├── client/                 # React + Vite frontend
+├── next/                   # Next.js app (primary)
 │   ├── src/
-│   │   ├── components/     # UI, auth, layout, dashboard components
-│   │   ├── hooks/          # useAuth hook
-│   │   ├── lib/            # Supabase client, API helper, utilities
-│   │   ├── pages/          # All page components (auth, dashboard, landing, pricing)
-│   │   ├── store/          # Zustand state management
-│   │   └── types/          # TypeScript type definitions
-│   └── vite.config.ts
-├── server/                 # Node.js + Express backend
-│   ├── src/
-│   │   ├── config/         # Environment variables, Supabase admin client
-│   │   ├── db/             # SQL schema with RLS policies
-│   │   ├── middleware/     # Auth, quota enforcement, file upload validation
-│   │   ├── routes/         # Transcriptions, exports, payments, webhooks, users
-│   │   ├── services/       # Whisper API, GPT-4o, language validation, file export
-│   │   └── worker.ts       # BullMQ transcription processing worker
-│   └── railway.toml
+│   │   ├── app/            # App Router pages and API routes
+│   │   ├── components/     # UI, auth, layout components
+│   │   ├── lib/            # Supabase, API, services
+│   │   └── types/          # TypeScript definitions
+│   └── worker/             # BullMQ transcription worker
+├── server/                 # Legacy Express backend (reference)
+│   └── src/db/schema.sql  # Database schema — run in Supabase
 └── transcription-app-plan.md
 ```
 
@@ -70,57 +61,50 @@ typemyaudio/
 - A [Stripe](https://stripe.com) account
 - Redis (local or [Upstash](https://upstash.com))
 
-### 1. Clone and install
+### 1. Set up the database
+
+Run `server/src/db/schema.sql` in the Supabase SQL Editor. This creates:
+
+- Tables (profiles, transcriptions, usage_records, etc.)
+- Indexes and RLS policies
+- Storage buckets: `audio-uploads`, `transcription-exports`
+- Storage policies for user-scoped uploads and exports
+
+### 2. Clone and install
 
 ```bash
-# Frontend
-cd client
-npm install
-
-# Backend
-cd ../server
+cd next
 npm install
 ```
 
-### 2. Configure environment variables
-
-Copy the example files and fill in your keys:
+### 3. Configure environment variables
 
 ```bash
-cp client/.env.example client/.env
-cp server/.env.example server/.env
+cp .env.example .env.local
 ```
 
-### 3. Set up the database
-
-Run `server/src/db/schema.sql` in the Supabase SQL Editor. This creates all tables, indexes, RLS policies, and the auto-profile trigger.
-
-Create two storage buckets in Supabase: `audio-uploads` and `transcription-exports`.
+Fill in Supabase, Stripe, OpenAI, and Redis credentials. For local dev, set `NEXT_PUBLIC_APP_URL=http://localhost:3000` or leave it empty.
 
 ### 4. Run locally
 
 ```bash
-# Terminal 1 — Frontend
-cd client
+# Terminal 1 — Next.js app
+cd next
 npm run dev
 
-# Terminal 2 — Backend API
-cd server
-npm run dev
-
-# Terminal 3 — Transcription worker
-cd server
+# Terminal 2 — Transcription worker
+cd next
 npm run worker
 ```
 
-The frontend runs at `http://localhost:5173` and proxies API requests to the backend on port 3001.
+App runs at [http://localhost:3000](http://localhost:3000).
 
 ## Deployment
 
 | Service | Platform |
 |---------|----------|
-| Frontend | Vercel |
-| Backend + Worker | Railway / Render |
+| Next.js app | Vercel |
+| Transcription worker | Railway / Render / VPS |
 | Database + Auth + Storage | Supabase |
 | Redis | Upstash |
 

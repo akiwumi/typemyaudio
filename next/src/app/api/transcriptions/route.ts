@@ -6,10 +6,18 @@ import { checkQuota } from "@/lib/quota";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { TRANSLATION_TARGETS } from "@/lib/services/languages";
 
-const connection = new IORedis(process.env.REDIS_URL || "redis://localhost:6379", {
-  maxRetriesPerRequest: null,
-});
-const transcriptionQueue = new Queue("transcription", { connection });
+let _queue: Queue | null = null;
+
+function getTranscriptionQueue(): Queue | null {
+  if (!process.env.REDIS_URL) return null;
+  if (_queue) return _queue;
+  const connection = new IORedis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+    ...(process.env.REDIS_URL.startsWith("rediss://") && { tls: {} }),
+  });
+  _queue = new Queue("transcription", { connection });
+  return _queue;
+}
 
 export async function GET(request: NextRequest) {
   const authResult = await requireAuth(request);
@@ -64,6 +72,17 @@ export async function POST(request: NextRequest) {
 
     if (insertError) {
       return NextResponse.json({ error: "Failed to create transcription record" }, { status: 500 });
+    }
+
+    const transcriptionQueue = getTranscriptionQueue();
+    if (!transcriptionQueue) {
+      return NextResponse.json(
+        {
+          error:
+            "Transcription service is not configured. Please add REDIS_URL (e.g. Upstash Redis) to enable audio processing.",
+        },
+        { status: 503 }
+      );
     }
 
     await transcriptionQueue.add("process", {

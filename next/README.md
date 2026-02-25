@@ -1,6 +1,6 @@
 # TypeMyAudio — Next.js
 
-This is the migrated Next.js version of TypeMyAudio, combining the former Vite + React frontend and Express backend into a single Next.js application.
+Next.js version of TypeMyAudio, combining the former Vite + React frontend and Express backend into a single application.
 
 ## Structure
 
@@ -11,26 +11,44 @@ This is the migrated Next.js version of TypeMyAudio, combining the former Vite +
 
 ## Getting Started
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 1. Set up the database
 
-2. **Configure environment**
-   - Copy `.env.example` to `.env.local`
-   - Fill in your Supabase, Stripe, OpenAI, and Redis credentials
+Run `../server/src/db/schema.sql` in the Supabase SQL Editor. This creates tables, RLS policies, and storage buckets (`audio-uploads`, `transcription-exports`).
 
-3. **Run development**
-   ```bash
-   npm run dev
-   ```
-   App runs at [http://localhost:3000](http://localhost:3000)
+### 2. Install dependencies
 
-4. **Run the transcription worker** (separate terminal)
-   ```bash
-   npm run worker
-   ```
-   Requires Redis and the same env vars.
+```bash
+npm install
+```
+
+### 3. Configure environment
+
+Copy `.env.example` to `.env.local` and fill in:
+
+- Supabase URL and keys (anon + service role)
+- Stripe keys and webhook secret
+- OpenAI API key
+- Redis URL (e.g. `redis://localhost:6379`)
+
+For local dev, set `NEXT_PUBLIC_APP_URL=http://localhost:3000` or leave empty to use relative URLs.
+
+### 4. Run development
+
+```bash
+npm run dev
+```
+
+App runs at [http://localhost:3000](http://localhost:3000).
+
+### 5. Run the transcription worker
+
+In a separate terminal:
+
+```bash
+npm run worker
+```
+
+Requires Redis and the same env vars.
 
 ## Environment Variables
 
@@ -39,36 +57,29 @@ This is the migrated Next.js version of TypeMyAudio, combining the former Vite +
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
 | `SUPABASE_URL` | Same as above (server-side) |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key |
-| `NEXT_PUBLIC_APP_URL` | App URL (e.g. `https://yourapp.vercel.app`) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role JWT (not Postgres URL) |
+| `NEXT_PUBLIC_APP_URL` | App URL (e.g. `https://yourapp.vercel.app` or `http://localhost:3000`) |
 | `STRIPE_SECRET_KEY` | Stripe secret key |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
 | `OPENAI_API_KEY` | OpenAI API key |
-| `REDIS_URL` | Redis URL for BullMQ |
+| `REDIS_URL` | Redis URL for BullMQ (e.g. `redis://localhost:6379`) |
 
 ## Deployment
 
-### Vercel
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for a complete step-by-step guide, including:
 
-1. Deploy the Next.js app to Vercel
-2. Add all env vars in Vercel project settings
-3. Configure Stripe webhook URL: `https://yourapp.vercel.app/api/webhooks/stripe`
-4. Update Supabase Auth redirect URLs to include your Vercel domain
+- Vercel configuration (including `REDIS_URL`)
+- Supabase Auth redirect URLs
+- Redis setup (Upstash)
+- Worker deployment (Railway, Render, or VPS)
 
-### Worker
+### Quick summary
 
-The transcription worker must run separately (e.g. on Railway, Render, or a VPS) with:
-- Redis
-- Same env vars (Supabase, OpenAI, Redis)
+1. Deploy Next.js to Vercel and add all env vars (including `REDIS_URL`)
+2. Configure Stripe webhook URL: `https://yourapp.vercel.app/api/webhooks/stripe`
+3. Update Supabase Auth redirect URLs to include your Vercel domain
+4. Deploy the worker separately with `npm run worker:prod` (Railway, Render, or VPS)
 
-## Migration from Vite + Express
+## Troubleshooting
 
-- **Client**: `client/` → `src/app/` and `src/components/`
-- **Server**: `server/src/routes/` → `src/app/api/`
-- **Routing**: React Router → Next.js file-based routing
-- **Env**: `import.meta.env.VITE_*` → `process.env.NEXT_PUBLIC_*`
-
-## Legacy Folders
-
-- `client/` and `server/` can be removed after the migration is verified.
-- Keep `server/src/db/schema.sql` for reference.
+**Upload failed** — Ensure the `audio-uploads` bucket exists (created by schema.sql). Check Supabase Storage in the dashboard. Verify `SUPABASE_SERVICE_ROLE_KEY` is the service role JWT, not the Postgres connection string.

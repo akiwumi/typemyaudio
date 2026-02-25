@@ -14,13 +14,22 @@ import {
 } from "../src/lib/services/transcription";
 import { validateLanguage } from "../src/lib/services/languages";
 
+const requiredEnvVars = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "REDIS_URL", "OPENAI_API_KEY"];
+const missing = requiredEnvVars.filter((k) => !process.env[k]);
+if (missing.length > 0) {
+  console.error(`Missing required env vars: ${missing.join(", ")}`);
+  process.exit(1);
+}
+
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const connection = new IORedis(process.env.REDIS_URL || "redis://localhost:6379", {
+const redisUrl = process.env.REDIS_URL!;
+const connection = new IORedis(redisUrl, {
   maxRetriesPerRequest: null,
+  ...(redisUrl.startsWith("rediss://") && { tls: {} }),
 });
 
 const worker = new Worker(

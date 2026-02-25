@@ -23,8 +23,12 @@ async function request<T>(
   });
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(error.error || error.message || "Request failed");
+    const body = await res.json().catch(() => null);
+    const msg =
+      (body && (body.error || body.message || body.detail)) ||
+      res.statusText ||
+      `Request failed (${res.status})`;
+    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
   }
 
   return res.json();
