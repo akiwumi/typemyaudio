@@ -9,6 +9,7 @@ import RegisterPage from "@/pages/register";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
 import AuthCallbackPage from "@/pages/auth-callback";
+import EmailVerifiedPage from "@/pages/email-verified";
 import PricingPage from "@/pages/pricing";
 import DashboardPage from "@/pages/dashboard/index";
 import UploadPage from "@/pages/dashboard/upload";
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/email-verified" element={<EmailVerifiedPage />} />
           <Route path="/pricing" element={<PricingPage />} />
 
           <Route path="/dashboard" element={<DashboardLayout />}>
