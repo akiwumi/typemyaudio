@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import { supabase } from "@/lib/supabase";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -73,16 +74,32 @@ export default function UploadPage() {
     setError("");
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      if (targetLanguage) {
-        formData.append("targetLanguage", targetLanguage);
-      }
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("You must be logged in to upload.");
 
-      setProgress(30);
-      const result = await api.upload("/api/transcriptions", formData) as { id: string };
+      const transcriptionId = crypto.randomUUID();
+      const storagePath = `${session.user.id}/${transcriptionId}/${file.name}`;
+
+      setProgress(20);
+      const { error: storageError } = await supabase.storage
+        .from("audio-uploads")
+        .upload(storagePath, file, {
+          contentType: file.type,
+          upsert: false,
+        });
+
+      if (storageError) throw new Error("File upload failed: " + storageError.message);
+
+      setProgress(70);
+      const result = await api.post<{ id: string }>("/api/transcriptions", {
+        transcriptionId,
+        storagePath,
+        originalFilename: file.name,
+        fileSize: file.size,
+        targetLanguage: targetLanguage || null,
+      });
+
       setProgress(100);
-
       navigate(`/dashboard/transcriptions/${result.id}`);
     } catch (err: any) {
       setError(err.message || "Upload failed. Please try again.");

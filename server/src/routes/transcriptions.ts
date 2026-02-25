@@ -1,10 +1,8 @@
 import { Router } from "express";
-import { v4 as uuidv4 } from "uuid";
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
 import { requireAuth, type AuthRequest } from "../middleware/auth.js";
 import { checkQuota } from "../middleware/quota.js";
-import { upload } from "../middleware/upload.js";
 import { supabaseAdmin } from "../config/supabase.js";
 import { env } from "../config/env.js";
 import { TRANSLATION_TARGETS } from "../services/languages.js";
@@ -53,41 +51,30 @@ transcriptionRoutes.post(
   "/",
   requireAuth,
   checkQuota as any,
-  upload.single("file"),
   async (req, res) => {
     const { userId } = (req as AuthRequest).auth;
-    const file = req.file;
+    const { transcriptionId, storagePath, originalFilename, fileSize, targetLanguage } = req.body;
 
-    if (!file) {
-      res.status(400).json({ error: "No file uploaded" });
+    if (!transcriptionId || !storagePath || !originalFilename) {
+      res.status(400).json({ error: "Missing required fields" });
       return;
     }
 
-    const targetLanguage = req.body.targetLanguage || null;
-    const transcriptionId = uuidv4();
-    const storagePath = `${userId}/${transcriptionId}/${file.originalname}`;
+    const expectedPrefix = `${userId}/${transcriptionId}/`;
+    if (!storagePath.startsWith(expectedPrefix)) {
+      res.status(403).json({ error: "Invalid storage path" });
+      return;
+    }
 
     try {
-      const { error: uploadError } = await supabaseAdmin.storage
-        .from("audio-uploads")
-        .upload(storagePath, file.buffer, {
-          contentType: file.mimetype,
-          upsert: false,
-        });
-
-      if (uploadError) {
-        res.status(500).json({ error: "Failed to upload file to storage" });
-        return;
-      }
-
       const { error: insertError } = await supabaseAdmin.from("transcriptions").insert({
         id: transcriptionId,
         user_id: userId,
-        title: file.originalname.replace(/\.(mp3|mp4)$/i, ""),
-        original_filename: file.originalname,
+        title: originalFilename.replace(/\.(mp3|mp4)$/i, ""),
+        original_filename: originalFilename,
         file_url: storagePath,
-        file_size: file.size,
-        target_language: targetLanguage,
+        file_size: fileSize,
+        target_language: targetLanguage || null,
         status: "pending",
       });
 
