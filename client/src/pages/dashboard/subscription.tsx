@@ -19,7 +19,7 @@ interface SubscriptionData {
 }
 
 export default function SubscriptionPage() {
-  const { profile } = useAuth();
+  useAuth();
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
