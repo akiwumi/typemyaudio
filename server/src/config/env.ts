@@ -5,6 +5,7 @@ export const env = {
   PORT: parseInt(process.env.PORT || "3001", 10),
   SUPABASE_URL: process.env.SUPABASE_URL || "",
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+  SUPABASE_DB_URL: process.env.SUPABASE_DB_URL || "",
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || "",
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || "",

@@ -99,7 +99,7 @@ const worker = new Worker(
       const periodStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
 
       if (profile?.tier === "free") {
-        await supabaseAdmin.rpc("increment_free_used", { user_id: userId });
+        await supabaseAdmin.rpc("increment_free_used", { p_user_id: userId });
       }
 
       await supabaseAdmin.from("usage_records").insert({

@@ -1,10 +1,16 @@
 import { Router } from "express";
 import { v4 as uuidv4 } from "uuid";
+import { Queue } from "bullmq";
+import IORedis from "ioredis";
 import { requireAuth, type AuthRequest } from "../middleware/auth.js";
 import { checkQuota } from "../middleware/quota.js";
 import { upload } from "../middleware/upload.js";
 import { supabaseAdmin } from "../config/supabase.js";
+import { env } from "../config/env.js";
 import { TRANSLATION_TARGETS } from "../services/languages.js";
+
+const connection = new IORedis(env.REDIS_URL, { maxRetriesPerRequest: null });
+const transcriptionQueue = new Queue("transcription", { connection });
 
 export const transcriptionRoutes = Router();
 
@@ -90,8 +96,12 @@ transcriptionRoutes.post(
         return;
       }
 
-      // TODO: Add BullMQ job to queue for processing
-      // For now, mark as pending — the worker will pick it up
+      await transcriptionQueue.add("process", {
+        transcriptionId,
+        userId,
+        filePath: storagePath,
+        targetLanguage,
+      });
 
       res.status(201).json({
         id: transcriptionId,

@@ -50,7 +50,7 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
 
   if (session.metadata?.type === "token_purchase") {
     const quantity = parseInt(session.metadata.quantity || "0", 10);
-    await supabaseAdmin.rpc("increment_tokens", { user_id: userId, amount: quantity });
+    await supabaseAdmin.rpc("increment_tokens", { p_user_id: userId, amount: quantity });
 
     await supabaseAdmin.from("token_purchases").insert({
       user_id: userId,
