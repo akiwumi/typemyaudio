@@ -1,17 +1,28 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isSignupVerification = searchParams.get("type") === "signup";
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event) => {
+    if (isSignupVerification) {
+      navigate("/email-verified", { replace: true });
+      return;
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       }
     });
-  }, [navigate]);
+
+    return () => subscription.unsubscribe();
+  }, [navigate, isSignupVerification]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

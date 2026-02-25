@@ -52,7 +52,7 @@ export function useAuth() {
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/email-verified`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?type=signup`,
       },
     });
     if (error) throw error;
