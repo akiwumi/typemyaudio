@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getStripe } from "@/lib/stripe";
+
 const FRONTEND_URL = process.env.NEXT_PUBLIC_APP_URL || "";
+
+const ALLOWED_PRICE_IDS = (
+  process.env.STRIPE_PRICE_IDS || "price_starter_monthly,price_annual"
+)
+  .split(",")
+  .map((id) => id.trim())
+  .filter(Boolean);
 
 export async function POST(request: NextRequest) {
   const authResult = await requireAuth(request);
@@ -11,6 +19,17 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const { priceId } = body;
+
+  if (!priceId || typeof priceId !== "string") {
+    return NextResponse.json({ error: "Missing priceId" }, { status: 400 });
+  }
+
+  if (!ALLOWED_PRICE_IDS.includes(priceId)) {
+    return NextResponse.json(
+      { error: "Invalid price. Add your Stripe price IDs to STRIPE_PRICE_IDS." },
+      { status: 400 }
+    );
+  }
 
   const { data: profile } = await supabaseAdmin
     .from("profiles")

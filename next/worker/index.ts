@@ -113,7 +113,8 @@ const worker = new Worker(
       const now = new Date();
       const periodStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
 
-      if (profile?.tier === "free") {
+      const tier = profile?.tier ?? "free";
+      if (tier === "free") {
         await supabaseAdmin.rpc("increment_free_used", { p_user_id: userId });
       }
 

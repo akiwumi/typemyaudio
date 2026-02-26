@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import fs from "fs";
-import { LANGUAGE_NAMES, TRANSLATION_TARGETS } from "./languages.js";
+import { LANGUAGE_NAMES, TRANSLATION_TARGETS } from "./languages";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

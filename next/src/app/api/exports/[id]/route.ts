@@ -99,10 +99,15 @@ export async function POST(
       );
   }
 
+  const safeFilename = transcription.title
+    .replace(/["\\\r\n]/g, "")
+    .slice(0, 200) || "transcription";
+  const encodedFilename = encodeURIComponent(`${safeFilename}.${extension}`);
+
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": contentType,
-      "Content-Disposition": `attachment; filename="${transcription.title}.${extension}"`,
+      "Content-Disposition": `attachment; filename="${safeFilename}.${extension}"; filename*=UTF-8''${encodedFilename}`,
     },
   });
 }

@@ -24,6 +24,9 @@ export async function GET(
   return NextResponse.json(data);
 }
 
+const MAX_TITLE = 500;
+const MAX_FORMATTED_TEXT = 1_000_000; // ~1MB
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -35,9 +38,27 @@ export async function PUT(
   const body = await request.json();
   const { title, formatted_text } = body;
 
+  const updates: { title?: string; formatted_text?: string; updated_at: string } = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (title !== undefined) {
+    updates.title =
+      typeof title === "string"
+        ? title.trim().slice(0, MAX_TITLE) || "Untitled"
+        : "Untitled";
+  }
+
+  if (formatted_text !== undefined) {
+    updates.formatted_text =
+      typeof formatted_text === "string"
+        ? formatted_text.slice(0, MAX_FORMATTED_TEXT)
+        : null;
+  }
+
   const { data, error } = await supabaseAdmin
     .from("transcriptions")
-    .update({ title, formatted_text, updated_at: new Date().toISOString() })
+    .update(updates)
     .eq("id", id)
     .eq("user_id", userId)
     .select()

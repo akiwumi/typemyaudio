@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
@@ -8,6 +8,7 @@ function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isSignupVerification = searchParams.get("type") === "signup";
+  const subRef = useRef<{ unsubscribe: () => void } | null>(null);
 
   useEffect(() => {
     if (isSignupVerification) {
@@ -15,15 +16,27 @@ function AuthCallbackContent() {
       return;
     }
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN") {
-        router.replace("/dashboard");
+    function redirectToDashboard() {
+      router.replace("/dashboard");
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        redirectToDashboard();
+        return;
       }
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event) => {
+        if (event === "SIGNED_IN") {
+          redirectToDashboard();
+        }
+      });
+      subRef.current = subscription;
     });
 
-    return () => subscription.unsubscribe();
+    return () => subRef.current?.unsubscribe();
   }, [router, isSignupVerification]);
 
   return (
