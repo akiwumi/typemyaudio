@@ -4,7 +4,6 @@ import IORedis from "ioredis";
 import { requireAuth } from "@/lib/auth";
 import { checkQuota } from "@/lib/quota";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { TRANSLATION_TARGETS } from "@/lib/services/languages";
 
 let _queue: Queue | null = null;
 
@@ -19,6 +18,21 @@ function getTranscriptionQueue(): Queue | null {
   return _queue;
 }
 
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: corsHeaders(),
+  });
+}
+
 export async function GET(request: NextRequest) {
   const authResult = await requireAuth(request);
   if (authResult instanceof NextResponse) return authResult;
@@ -31,9 +45,9 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() });
   }
-  return NextResponse.json(data);
+  return NextResponse.json(data, { headers: corsHeaders() });
 }
 
 export async function POST(request: NextRequest) {
@@ -43,19 +57,19 @@ export async function POST(request: NextRequest) {
 
   const quotaResult = await checkQuota(userId);
   if (!quotaResult.ok) {
-    return NextResponse.json({ error: quotaResult.error }, { status: 403 });
+    return NextResponse.json({ error: quotaResult.error }, { status: 403, headers: corsHeaders() });
   }
 
   const body = await request.json();
   const { transcriptionId, storagePath, originalFilename, fileSize, targetLanguage } = body;
 
   if (!transcriptionId || !storagePath || !originalFilename) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400, headers: corsHeaders() });
   }
 
   const expectedPrefix = `${userId}/${transcriptionId}/`;
   if (!storagePath.startsWith(expectedPrefix)) {
-    return NextResponse.json({ error: "Invalid storage path" }, { status: 403 });
+    return NextResponse.json({ error: "Invalid storage path" }, { status: 403, headers: corsHeaders() });
   }
 
   try {
@@ -71,7 +85,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (insertError) {
-      return NextResponse.json({ error: "Failed to create transcription record" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to create transcription record" },
+        { status: 500, headers: corsHeaders() }
+      );
     }
 
     const transcriptionQueue = getTranscriptionQueue();
@@ -81,7 +98,7 @@ export async function POST(request: NextRequest) {
           error:
             "Transcription service is not configured. Please add REDIS_URL (e.g. Upstash Redis) to enable audio processing.",
         },
-        { status: 503 }
+        { status: 503, headers: corsHeaders() }
       );
     }
 
@@ -98,13 +115,13 @@ export async function POST(request: NextRequest) {
         status: "pending",
         message: "Transcription queued for processing",
       },
-      { status: 201 }
+      { status: 201, headers: corsHeaders() }
     );
   } catch (err) {
     console.error("Upload error:", err);
     return NextResponse.json(
       { error: "Internal server error during upload" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders() }
     );
   }
 }
