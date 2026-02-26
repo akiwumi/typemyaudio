@@ -33,8 +33,9 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: err.message || "Internal server error" });
 });
 
-app.listen(env.PORT, () => {
-  console.log(`Server running on port ${env.PORT}`);
+const port = env.PORT;
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
 });
 
 export default app;
