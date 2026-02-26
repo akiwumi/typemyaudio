@@ -20,6 +20,10 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/exports", exportRoutes);
 app.use("/api/users", userRoutes);
 
+app.get("/", (_req, res) => {
+  res.send("Hello World!");
+});
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
