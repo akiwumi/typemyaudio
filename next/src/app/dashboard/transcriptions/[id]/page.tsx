@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { api } from "@/lib/api";
+import { api, getApiBase } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,6 @@ import { formatDate } from "@/lib/utils";
 import type { Transcription } from "@/types/database";
 import { ArrowLeft, Languages, Edit3, Save, FileText, FileDown } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export default function TranscriptionViewPage() {
   const params = useParams();
@@ -77,7 +76,7 @@ export default function TranscriptionViewPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) headers.Authorization = `Bearer ${session.access_token}`;
 
-      const res = await fetch(`${API_URL}/api/exports/${transcription.id}`, {
+      const res = await fetch(`${getApiBase()}/api/exports/${transcription.id}`, {
         method: "POST",
         headers,
         body: JSON.stringify({ format }),

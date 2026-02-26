@@ -1,6 +1,11 @@
 import { supabase } from "./supabase";
 
-const API_URL = process.env.NEXT_PUBLIC_APP_URL || "";
+export function getApiBase(): string {
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    return "";
+  }
+  return process.env.NEXT_PUBLIC_APP_URL || "";
+}
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const { data: { session } } = await supabase.auth.getSession();
@@ -13,7 +18,7 @@ async function request<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const headers = await getAuthHeaders();
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${getApiBase()}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
