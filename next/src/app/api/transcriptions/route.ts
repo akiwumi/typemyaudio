@@ -18,28 +18,6 @@ function getTranscriptionQueue(): Queue | null {
   return _queue;
 }
 
-function corsHeaders(request?: NextRequest) {
-  const origin = request?.headers.get("origin");
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-  const allowedOrigin =
-    origin &&
-    (origin === appUrl || /^https?:\/\/localhost(:\d+)?$/.test(origin) || /^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin))
-      ? origin
-      : appUrl || "http://localhost:3000";
-  return {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  };
-}
-
-export async function OPTIONS(request: NextRequest) {
-  return new NextResponse(null, {
-    status: 204,
-    headers: corsHeaders(request),
-  });
-}
-
 export async function GET(request: NextRequest) {
   const authResult = await requireAuth(request);
   if (authResult instanceof NextResponse) return authResult;
@@ -52,9 +30,9 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders(request) });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json(data, { headers: corsHeaders(request) });
+  return NextResponse.json(data);
 }
 
 export async function POST(request: NextRequest) {
@@ -64,19 +42,19 @@ export async function POST(request: NextRequest) {
 
   const quotaResult = await checkQuota(userId);
   if (!quotaResult.ok) {
-    return NextResponse.json({ error: quotaResult.error }, { status: 403, headers: corsHeaders(request) });
+    return NextResponse.json({ error: quotaResult.error }, { status: 403 });
   }
 
   const body = await request.json();
   const { transcriptionId, storagePath, originalFilename, fileSize, targetLanguage } = body;
 
   if (!transcriptionId || !storagePath || !originalFilename) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400, headers: corsHeaders(request) });
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
   const expectedPrefix = `${userId}/${transcriptionId}/`;
   if (!storagePath.startsWith(expectedPrefix)) {
-    return NextResponse.json({ error: "Invalid storage path" }, { status: 403, headers: corsHeaders(request) });
+    return NextResponse.json({ error: "Invalid storage path" }, { status: 403 });
   }
 
   try {
@@ -92,20 +70,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (insertError) {
-      return NextResponse.json(
-        { error: "Failed to create transcription record" },
-        { status: 500, headers: corsHeaders(request) }
-      );
+      return NextResponse.json({ error: "Failed to create transcription record" }, { status: 500 });
     }
 
     const transcriptionQueue = getTranscriptionQueue();
     if (!transcriptionQueue) {
       return NextResponse.json(
-        {
-          error:
-            "Transcription service is not configured. Please add REDIS_URL (e.g. Upstash Redis) to enable audio processing.",
-        },
-        { status: 503, headers: corsHeaders(request) }
+        { error: "Transcription service is not configured. Please add REDIS_URL to enable audio processing." },
+        { status: 503 }
       );
     }
 
@@ -117,18 +89,11 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      {
-        id: transcriptionId,
-        status: "pending",
-        message: "Transcription queued for processing",
-      },
-      { status: 201, headers: corsHeaders(request) }
+      { id: transcriptionId, status: "pending", message: "Transcription queued for processing" },
+      { status: 201 }
     );
   } catch (err) {
     console.error("Upload error:", err);
-    return NextResponse.json(
-      { error: "Internal server error during upload" },
-      { status: 500, headers: corsHeaders(request) }
-    );
+    return NextResponse.json({ error: "Internal server error during upload" }, { status: 500 });
   }
 }

@@ -9,22 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatFileSize } from "@/lib/utils";
 import { Upload, X, Globe, FileAudio, FileVideo } from "lucide-react";
+import { TRANSLATION_TARGETS } from "@/lib/services/languages";
 
 const ACCEPTED_FORMATS = { "audio/mpeg": [".mp3"], "video/mp4": [".mp4"] };
-
-const TRANSLATION_TARGETS = [
-  { code: "en", name: "English" }, { code: "es", name: "Spanish" }, { code: "fr", name: "French" }, { code: "de", name: "German" },
-  { code: "it", name: "Italian" }, { code: "pt", name: "Portuguese" }, { code: "nl", name: "Dutch" }, { code: "ru", name: "Russian" },
-  { code: "zh", name: "Chinese (Simplified)" }, { code: "ja", name: "Japanese" }, { code: "ko", name: "Korean" }, { code: "ar", name: "Arabic" },
-  { code: "hi", name: "Hindi" }, { code: "tr", name: "Turkish" }, { code: "pl", name: "Polish" }, { code: "sv", name: "Swedish" },
-  { code: "da", name: "Danish" }, { code: "fi", name: "Finnish" }, { code: "no", name: "Norwegian" }, { code: "cs", name: "Czech" },
-  { code: "ro", name: "Romanian" }, { code: "hu", name: "Hungarian" }, { code: "el", name: "Greek" }, { code: "he", name: "Hebrew" },
-  { code: "th", name: "Thai" }, { code: "vi", name: "Vietnamese" }, { code: "id", name: "Indonesian" }, { code: "ms", name: "Malay" },
-  { code: "uk", name: "Ukrainian" }, { code: "bg", name: "Bulgarian" }, { code: "hr", name: "Croatian" }, { code: "sk", name: "Slovak" },
-  { code: "sl", name: "Slovenian" }, { code: "sr", name: "Serbian" }, { code: "bn", name: "Bengali" }, { code: "ta", name: "Tamil" },
-  { code: "te", name: "Telugu" }, { code: "ur", name: "Urdu" }, { code: "fa", name: "Persian" }, { code: "sw", name: "Swahili" },
-  { code: "tl", name: "Filipino" },
-];
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
