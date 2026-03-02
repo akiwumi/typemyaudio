@@ -11,9 +11,6 @@
     "worker:prod": "tsx worker/index.ts"
   },
   "dependencies": {
-    "dotenv": "^17.3.1"
-  },
-  "dependencies": {
     "@tailwindcss/postcss": "^4.0.0",
     "tailwindcss": "^4.0.0",
     "@hookform/resolvers": "^5.2.2",
