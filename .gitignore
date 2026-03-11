@@ -9,3 +9,4 @@ coverage/
 .vercel
 .railway
 .env*.local
+.claude/
