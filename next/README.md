@@ -61,6 +61,7 @@ Requires Redis and the same env vars.
 | `NEXT_PUBLIC_APP_URL` | App URL (e.g. `https://yourapp.vercel.app` or `http://localhost:3000`) |
 | `STRIPE_SECRET_KEY` | Stripe secret key |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
+| `STRIPE_PRICE_IDS` | Comma-separated subscription price IDs from Stripe Dashboard |
 | `OPENAI_API_KEY` | OpenAI API key |
 | `REDIS_URL` | Redis URL for BullMQ (e.g. `redis://localhost:6379`) |
 

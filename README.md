@@ -83,7 +83,7 @@ npm install
 cp .env.example .env.local
 ```
 
-Fill in Supabase, Stripe, OpenAI, and Redis credentials. For local dev, set `NEXT_PUBLIC_APP_URL=http://localhost:3000` or leave it empty.
+Fill in Supabase, Stripe, OpenAI, and Redis credentials. See `next/.env.example` for the full list. For local dev, set `NEXT_PUBLIC_APP_URL=http://localhost:3000` or leave it empty.
 
 ### 4. Run locally
 
@@ -107,6 +107,8 @@ App runs at [http://localhost:3000](http://localhost:3000).
 | Transcription worker | Railway / Render / VPS |
 | Database + Auth + Storage | Supabase |
 | Redis | Upstash |
+
+See **[deployment.md](./deployment.md)** for a complete step-by-step deployment guide.
 
 ## License
 
